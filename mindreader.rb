@@ -23,13 +23,13 @@ module MindReader
       if question_answer == 'y'
         if @yes.nil?
           @yes = MindReader.read_new_animal(@animal)
-        elsif !@yes.nil?
+        else
           @yes = @yes.guess
         end
       elsif question_answer == 'n'
         if @no.nil?
           @no = MindReader.read_new_animal(@animal)
-        elsif !@no.nil?
+        else
           @no = @no.guess
         end
       end
@@ -76,7 +76,6 @@ object = MindReader::Guess.new("elephant")
 loop do
   puts "Think of an animal..."
   object = object.guess
-  puts object.inspect
 
   puts "Play again? (y or n)"
   break if gets.chomp == 'n'
