@@ -2,18 +2,11 @@
 
 module MindReader
   class Question
-    def initialize(question, answer, animal)
+    def initialize(question, yes_answer=nil, no_answer=nil, animal)
       @name   = question
-      @answer = answer
       @animal = animal
-      @yes    = nil
-      @no     = nil
-
-      if @answer == 'y'
-        @yes = Guess.new(@animal)
-      elsif @answer == 'n'
-        @no = Guess.new(@animal)
-      end
+      @yes    = yes_answer
+      @no     = no_answer
     end
 
     def guess
@@ -67,11 +60,16 @@ module MindReader
     user_answer = gets.chomp
     puts 'Thanks.'
 
-    Question.new(user_question, user_answer, user_animal)
+    if user_answer == 'y'
+      Question.new(user_question, Guess.new(user_animal), Guess.new(animal), user_animal)
+    elsif user_answer == 'n'
+      Question.new(user_question, Guess.new(animal), Guess.new(user_animal), user_animal)
+    end
   end
 
 end
 
+require 'json'
 object = MindReader::Guess.new("elephant")
 loop do
   puts "Think of an animal..."
