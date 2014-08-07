@@ -2,7 +2,7 @@
 
 module MindReader
   class Question
-    def initialize(question, yes_answer=nil, no_answer=nil, animal)
+    def initialize(question, yes_answer, no_answer, animal)
       @name   = question
       @animal = animal
       @yes    = yes_answer
