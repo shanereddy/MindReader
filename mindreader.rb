@@ -2,8 +2,8 @@
 
 module MindReader
   class Answer
-    def initialize(input)
-      @answer = input
+    def initialize(yes_no_question)
+      @answer = get_answer_from_user(yes_no_question)
     end
 
     def yes?
@@ -13,6 +13,22 @@ module MindReader
     def no?
       @answer == 'n'
     end
+
+    private
+      def get_answer_from_user(yes_no_question)
+        answer = nil
+
+        while !valid_answer?(answer)
+          puts "#{yes_no_question}"
+          answer = gets.chomp
+        end
+
+        answer
+      end
+
+      def valid_answer?(answer)
+        answer == 'y' or answer == 'n'
+      end
   end
 
   class Question
@@ -24,8 +40,7 @@ module MindReader
     end
 
     def guess
-      puts "#{@name} (y or n)"
-      question = Answer.new(gets.chomp)
+      question = Answer.new("#{@name} (y or n)")
 
       if question.yes?
         @yes = @yes.guess
@@ -43,8 +58,7 @@ module MindReader
     end
 
     def guess
-      puts "Is it an #{@animal}? (y or n)"
-      answer = Answer.new(gets.chomp)
+      answer = Answer.new("Is it an #{@animal}? (y or n)")
 
       if answer.yes?
         puts "I win. Pretty smart, aren' t I?"
@@ -62,8 +76,7 @@ module MindReader
     user_animal = gets.chomp
     puts "Give me a question to distinguish a #{user_animal} from a #{animal}."
     user_question = gets.chomp
-    puts "For a #{user_animal}, what is the answer to your question? (y or n)"
-    user_answer = Answer.new(gets.chomp)
+    user_answer = Answer.new("For a #{user_animal}, what is the answer to your question? (y or n)")
     puts 'Thanks.'
 
     if user_answer.yes?
@@ -80,7 +93,6 @@ loop do
   puts "Think of an animal..."
   object = object.guess
 
-  puts "Play again? (y or n)"
-  break if MindReader::Answer.new(gets.chomp).no?
+  break if MindReader::Answer.new("Play again? (y or n)").no?
 end
 
