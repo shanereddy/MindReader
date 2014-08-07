@@ -1,6 +1,20 @@
 #!/usr/bin/env ruby
 
 module MindReader
+  class Answer
+    def initialize(input)
+      @answer = input
+    end
+
+    def yes?
+      @answer == 'y'
+    end
+
+    def no?
+      @answer == 'n'
+    end
+  end
+
   class Question
     def initialize(question, yes_answer, no_answer, animal)
       @name   = question
@@ -11,20 +25,12 @@ module MindReader
 
     def guess
       puts "#{@name} (y or n)"
-      question_answer = gets.chomp
+      question = Answer.new(gets.chomp)
 
-      if question_answer == 'y'
-        if @yes.nil?
-          @yes = MindReader.read_new_animal(@animal)
-        else
-          @yes = @yes.guess
-        end
-      elsif question_answer == 'n'
-        if @no.nil?
-          @no = MindReader.read_new_animal(@animal)
-        else
-          @no = @no.guess
-        end
+      if question.yes?
+        @yes = @yes.guess
+      else
+        @no = @no.guess
       end
 
       self
@@ -38,13 +44,13 @@ module MindReader
 
     def guess
       puts "Is it an #{@animal}? (y or n)"
-      answer = gets.chomp
+      answer = Answer.new(gets.chomp)
 
-      if answer == 'y'
+      if answer.yes?
         puts "I win. Pretty smart, aren' t I?"
         # We need to return something so we can start the game again
         self
-      elsif answer == 'n'
+      else
         MindReader.read_new_animal(@animal)
       end
     end
@@ -57,25 +63,24 @@ module MindReader
     puts "Give me a question to distinguish a #{user_animal} from a #{animal}."
     user_question = gets.chomp
     puts "For a #{user_animal}, what is the answer to your question? (y or n)"
-    user_answer = gets.chomp
+    user_answer = Answer.new(gets.chomp)
     puts 'Thanks.'
 
-    if user_answer == 'y'
+    if user_answer.yes?
       Question.new(user_question, Guess.new(user_animal), Guess.new(animal), user_animal)
-    elsif user_answer == 'n'
+    else
       Question.new(user_question, Guess.new(animal), Guess.new(user_animal), user_animal)
     end
   end
 
 end
 
-require 'json'
 object = MindReader::Guess.new("elephant")
 loop do
   puts "Think of an animal..."
   object = object.guess
 
   puts "Play again? (y or n)"
-  break if gets.chomp == 'n'
+  break if MindReader::Answer.new(gets.chomp).no?
 end
 
